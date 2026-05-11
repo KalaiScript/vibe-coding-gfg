@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | AURELIA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <a href="index.html" class="logo">AURELIA</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" id="cart-toggle">
+            <span>CART</span>
+            <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <main class="contact-container">
+        <h1 class="section-title fade-in">Concierge Inquiry</h1>
+        <p class="text-center fade-in" style="margin-bottom: 3rem;">Allow us to assist you with your bespoke requirements.</p>
+        
+        <form id="contact-form" class="fade-in">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="text" id="subject" placeholder="Subject" required>
+            <textarea id="message" rows="5" placeholder="How may we assist you?" required></textarea>
+            <button type="submit" class="btn">Send Inquiry</button>
+        </form>
+        <div id="form-response" class="text-center" style="margin-top: 2rem; color: var(--gold);"></div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

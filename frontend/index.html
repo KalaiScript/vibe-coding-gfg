@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURELIA | Luxury Fashion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header">
+        <a href="index.html" class="logo">AURELIA</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" id="cart-toggle">
+            <span>CART</span>
+            <span id="cart-count">0</span>
+        </div>
+        <div class="wishlist-icon" id="wishlist-btn">
+            <span>♥</span>
+            <span id="wishlist-count">0</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1 class="fade-in">Timeless Elegance</h1>
+            <p class="fade-in">Experience the pinnacle of luxury with our curated collection of artisanal pieces.</p>
+            <a href="#shop" class="btn fade-in">Explore Collection</a>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search for luxury pieces...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="price-low">Price: Low to High</button>
+                <button class="filter-btn" data-filter="price-high">Price: High to Low</button>
+                <button class="filter-btn" data-filter="wishlist">Wishlist</button>
+            </div>
+        </section>
+
+        <section class="products-section" id="shop">
+            <h2 class="section-title fade-in">The Collection</h2>
+            <div class="products-grid" id="products-container">
+                <!-- Products will be loaded here via JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Your Selection</h3>
+            <span class="close-cart" id="close-cart">&times;</span>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be loaded here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <a href="checkout.html" class="btn" style="display: block; text-align: center;">Checkout</a>
+        </div>
+    </div>
+
+    <!-- AI Concierge FAB -->
+    <div class="chat-fab" id="chat-fab">
+        <span>AI</span>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header-bar">
+            <span>AURELIA Concierge</span>
+            <span id="close-chat" style="cursor:pointer;">&times;</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">Welcome to AURELIA. I am your personal concierge. How may I assist you today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Inquire about materials, shipping...">
+            <button id="send-chat" class="btn" style="padding: 0.5rem 1rem;">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

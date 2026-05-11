@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | AURELIA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <a href="index.html" class="logo">AURELIA</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" id="cart-toggle">
+            <span>CART</span>
+            <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <main class="contact-container">
+        <h1 class="section-title fade-in">Order Summary</h1>
+        <div id="checkout-items" class="fade-in">
+            <!-- Items will be listed here -->
+        </div>
+        <hr style="border-color: #222; margin: 2rem 0;">
+        <div class="cart-total fade-in">
+            <span>Total to Invest</span>
+            <span id="checkout-total">$0.00</span>
+        </div>
+
+        <button id="process-payment-btn" class="btn fade-in" style="width: 100%; margin-top: 2rem;">Secure Payment</button>
+        <div id="payment-status" class="text-center" style="margin-top: 2rem; color: var(--gold);"></div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
