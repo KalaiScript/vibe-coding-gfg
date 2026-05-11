@@ -270,6 +270,72 @@ nav ul li a:hover {
     }
 }
 
+.collection-highlight {
+    padding: 4rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.collection-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.collection-title p {
+    color: var(--text-secondary);
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+}
+
+.collection-title h2 {
+    font-size: 2.8rem;
+    line-height: 1.1;
+}
+
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.collection-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2rem;
+    border-radius: 24px;
+    transition: transform 0.4s ease, border-color 0.4s ease;
+    backdrop-filter: blur(12px);
+}
+
+.collection-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(197, 160, 89, 0.4);
+}
+
+.collection-badge {
+    display: inline-flex;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(197, 160, 89, 0.12);
+    color: var(--gold);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.collection-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.collection-card p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
 .btn {
     padding: 1rem 2.5rem;
     background: transparent;

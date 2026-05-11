@@ -213,22 +213,6 @@ function updateCartUI() {
     if (cartTotalPrice) cartTotalPrice.innerText = `$${total.toLocaleString()}`;
 }
 
-// Wishlist Logic
-function toggleWishlist(productId) {
-    const product = products.find(p => p.id === productId);
-    const existingIndex = wishlist.findIndex(item => item.id === productId);
-    
-    if (existingIndex > -1) {
-        wishlist.splice(existingIndex, 1);
-    } else {
-        wishlist.push(product);
-    }
-    
-    saveWishlist();
-    updateWishlistUI();
-    renderProducts(); // Re-render to update wishlist buttons
-}
-
 function saveWishlist() {
     localStorage.setItem('aurelia_wishlist', JSON.stringify(wishlist));
 }
@@ -305,6 +289,12 @@ function closeCartDrawer() {
 function initEventListeners() {
     if (cartToggle) cartToggle.addEventListener('click', openCartDrawer);
     if (closeCart) closeCart.addEventListener('click', closeCartDrawer);
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', () => {
+            const wishlistFilter = document.querySelector('[data-filter="wishlist"]');
+            if (wishlistFilter) wishlistFilter.click();
+        });
+    }
     
     // Chat Logic
     const chatFab = document.getElementById('chat-fab');
@@ -431,23 +421,6 @@ function initEventListeners() {
                 statusDiv.innerText = 'Transaction failed. Please contact your bank.';
                 paymentBtn.disabled = false;
                 paymentBtn.innerHTML = 'Try Again';
-            }
-        });
-    }
-                        items: cart.map(i => ({ id: i.id, quantity: i.quantity })),
-                        total: total
-                    })
-                });
-                const data = await response.json();
-                
-                statusDiv.innerText = 'Success. Your AURELIA pieces are being prepared.';
-                localStorage.removeItem('aurelia_cart');
-                cart = [];
-                updateCartUI();
-                setTimeout(() => window.location.href = 'index.html', 3000);
-            } catch (error) {
-                statusDiv.innerText = 'Transaction failed. Please contact your bank.';
-                paymentBtn.disabled = false;
             }
         });
     }

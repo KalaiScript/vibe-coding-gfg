@@ -22,7 +22,8 @@ products = [
     Product(id=1, name="Silk Evening Gown", price=1200.0, imageUrl="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400&auto=format&fit=crop"),
     Product(id=2, name="Cashmere Oversized Coat", price=2500.0, imageUrl="https://images.unsplash.com/photo-1539533397308-a61f4ef3c7a2?q=80&w=400&auto=format&fit=crop"),
     Product(id=3, name="Italian Leather Handbag", price=1800.0, imageUrl="https://images.unsplash.com/photo-1584917033904-4911783b09d7?q=80&w=400&auto=format&fit=crop"),
-    Product(id=4, name="Velvet Tuxedo Blazer", price=950.0, imageUrl="https://images.unsplash.com/photo-1594932224828-b4b05a832c02?q=80&w=400&auto=format&fit=crop"),    Product(id=5, name="Crystal Embellished Heels", price=850.0, imageUrl="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=400&auto=format&fit=crop"),
+    Product(id=4, name="Velvet Tuxedo Blazer", price=950.0, imageUrl="https://images.unsplash.com/photo-1594932224828-b4b05a832c02?q=80&w=400&auto=format&fit=crop"),
+    Product(id=5, name="Crystal Embellished Heels", price=850.0, imageUrl="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=400&auto=format&fit=crop"),
     Product(id=6, name="Pearl Drop Earrings", price=650.0, imageUrl="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=400&auto=format&fit=crop"),
     Product(id=7, name="Silk Scarf Collection", price=320.0, imageUrl="https://images.unsplash.com/photo-1601762603332-db5e4b90cc5d?q=80&w=400&auto=format&fit=crop"),
     Product(id=8, name="Designer Sunglasses", price=750.0, imageUrl="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=400&auto=format&fit=crop"),]
@@ -47,6 +48,8 @@ async def chat(request: ChatRequest):
         response = "We offer complimentary white-glove delivery worldwide. Orders within the EU typically arrive within 48 hours, while international shipments take 3-5 business days."
     elif "price" in message or "cost" in message:
         response = "AURELIA represents an investment in timeless elegance. Our pricing reflects the unparalleled craftsmanship and rare materials used in every piece."
+    elif "collection" in message or "selection" in message or "curated" in message or "new arrivals" in message:
+        response = "Our latest collection blends evening glamour with contemporary tailoring. Explore Moonlit Gala, Modern Atelier and Signature Staples for considered luxury at every moment."
     elif "size" in message or "sizing" in message:
         response = "Each piece is meticulously tailored. We offer complimentary alterations and personal styling consultations. Our sizes range from XS to XXL with custom options available."
     elif "care" in message or "maintenance" in message:
@@ -60,7 +63,6 @@ async def chat(request: ChatRequest):
     elif "bye" in message or "goodbye" in message:
         response = "Thank you for choosing AURELIA. We look forward to welcoming you back soon."
     else:
-        response = "I understand. Our artisans pay meticulous attention to detail. Would you like to know more about our current season's inspirations or our bespoke tailoring services?"
         response = "I understand. Our artisans pay meticulous attention to detail. Would you like to know more about our current season's inspirations or our bespoke tailoring services?"
 
     return {"response": response}
