@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import time
-from models import Product, PaymentRequest, ChatRequest, ContactRequest
+from backend.models import Product, PaymentRequest, ChatRequest, ContactRequest
 from typing import List
 import os
 
