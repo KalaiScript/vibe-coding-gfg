@@ -1,10 +1,11 @@
-const API_URL = ''; // Relative path for consolidated deployment
+const API_URL = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : ''; // Auto-fallback for local file preview
 
 // Global State
 let cart = JSON.parse(localStorage.getItem('aurelia_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('aurelia_wishlist')) || [];
 let products = [];
 let filteredProducts = [];
+let adminEditProductId = null;
 
 // DOM Elements
 const header = document.getElementById('header');
@@ -19,6 +20,9 @@ const searchInput = document.getElementById('search-input');
 const filterButtons = document.querySelectorAll('.filter-btn');
 const wishlistBtn = document.getElementById('wishlist-btn');
 const wishlistCount = document.getElementById('wishlist-count');
+const adminProductsList = document.getElementById('admin-products-list');
+const adminForm = document.getElementById('admin-form');
+const adminFeedback = document.getElementById('admin-feedback');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (productsContainer) {
         showLoadingSkeletons();
+        fetchProducts();
+    } else if (adminProductsList) {
         fetchProducts();
     }
 
@@ -85,10 +91,16 @@ async function fetchProducts() {
         const response = await fetch(`${API_URL}/products`);
         products = await response.json();
         filteredProducts = [...products];
-        renderProducts();
+        if (productsContainer) renderProducts();
+        if (adminProductsList) renderAdminProducts();
     } catch (error) {
         console.error('Error fetching products:', error);
-        productsContainer.innerHTML = '<p>The collection is currently unavailable. Please check back soon.</p>';
+        if (productsContainer) {
+            productsContainer.innerHTML = '<p>The collection is currently unavailable. Please check back soon.</p>';
+        }
+        if (adminProductsList) {
+            adminProductsList.innerHTML = '<p>Unable to load admin collection data.</p>';
+        }
     }
 }
 
@@ -119,6 +131,119 @@ function renderProducts() {
         });
     });
     document.querySelectorAll('.product-card').forEach(el => observer.observe(el));
+}
+
+function renderAdminProducts() {
+    if (!adminProductsList) return;
+
+    if (products.length === 0) {
+        adminProductsList.innerHTML = '<p>No items are available in the collection yet.</p>';
+        return;
+    }
+
+    adminProductsList.innerHTML = products.map(product => `
+        <div class="admin-product-card">
+            <div class="admin-card-info">
+                <img src="${product.imageUrl}" alt="${product.name}">
+                <div>
+                    <h4>${product.name}</h4>
+                    <p>${product.category || 'Uncategorized'}</p>
+                    <span>$${product.price.toLocaleString()}</span>
+                </div>
+            </div>
+            <div class="admin-product-actions">
+                <button class="btn" onclick="populateAdminForm(${product.id})">Edit</button>
+                <button class="btn delete-btn" onclick="deleteAdminProduct(${product.id})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function populateAdminForm(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    adminEditProductId = product.id;
+    document.getElementById('admin-product-id').value = product.id;
+    document.getElementById('admin-product-name').value = product.name;
+    document.getElementById('admin-product-image').value = product.imageUrl;
+    document.getElementById('admin-product-price').value = product.price;
+    document.getElementById('admin-product-category').value = product.category || '';
+    if (adminFeedback) {
+        adminFeedback.innerText = `Editing ${product.name}. Submit to save changes.`;
+    }
+}
+
+async function handleAdminFormSubmit(e) {
+    if (!adminForm) return;
+    e.preventDefault();
+
+    const name = document.getElementById('admin-product-name').value.trim();
+    const imageUrl = document.getElementById('admin-product-image').value.trim();
+    const price = parseFloat(document.getElementById('admin-product-price').value);
+    const category = document.getElementById('admin-product-category').value.trim();
+
+    if (!name || !imageUrl || Number.isNaN(price)) {
+        showNotification('Please complete all required product fields.', 'error');
+        return;
+    }
+
+    const payload = {
+        name,
+        imageUrl,
+        price,
+        category: category || undefined
+    };
+
+    const method = adminEditProductId ? 'PUT' : 'POST';
+    const endpoint = adminEditProductId ? `${API_URL}/products/${adminEditProductId}` : `${API_URL}/products`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || 'Unable to save product');
+        }
+
+        adminFeedback.innerText = adminEditProductId ? 'Product updated successfully.' : 'Product added successfully.';
+        adminEditProductId = null;
+        document.getElementById('admin-product-id').value = '';
+        adminForm.reset();
+        await fetchProducts();
+        showNotification('Collection updated successfully.', 'success');
+    } catch (error) {
+        if (adminFeedback) {
+            adminFeedback.innerText = `Admin save failed: ${error.message}`;
+        }
+    }
+}
+
+async function deleteAdminProduct(productId) {
+    if (!confirm('Delete this product from the collection?')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/products/${productId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.detail || 'Unable to delete product');
+        }
+
+        adminFeedback.innerText = 'Product has been removed.';
+        await fetchProducts();
+        showNotification('Product deleted from collection.', 'info');
+    } catch (error) {
+        if (adminFeedback) {
+            adminFeedback.innerText = `Delete failed: ${error.message}`;
+        }
+    }
 }
 
 // Cart Logic
@@ -278,11 +403,19 @@ function debounce(func, wait) {
 }
 
 function openCartDrawer() {
-    cartDrawer.classList.add('open');
+    if (cartDrawer) {
+        cartDrawer.classList.add('open');
+        return;
+    }
+
+    // Fallback for pages without a drawer component
+    window.location.href = 'checkout.html';
 }
 
 function closeCartDrawer() {
-    cartDrawer.classList.remove('open');
+    if (cartDrawer) {
+        cartDrawer.classList.remove('open');
+    }
 }
 
 // Event Listeners
@@ -295,6 +428,9 @@ function initEventListeners() {
             if (wishlistFilter) wishlistFilter.click();
         });
     }
+    if (adminForm) {
+        adminForm.addEventListener('submit', handleAdminFormSubmit);
+    }
     
     // Chat Logic
     const chatFab = document.getElementById('chat-fab');
@@ -304,10 +440,10 @@ function initEventListeners() {
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
 
-    if (chatFab) {
+    if (chatFab && chatWindow) {
         chatFab.addEventListener('click', () => chatWindow.classList.toggle('open'));
     }
-    if (closeChat) {
+    if (closeChat && chatWindow) {
         closeChat.addEventListener('click', () => chatWindow.classList.remove('open'));
     }
 

@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import time
-from backend.models import Product, PaymentRequest, ChatRequest, ContactRequest
+from backend.models import Product, ProductCreate, ProductUpdate, PaymentRequest, ChatRequest, ContactRequest
 from typing import List
 import os
 
@@ -31,6 +31,30 @@ products = [
 @app.get("/products", response_model=List[Product])
 async def get_products():
     return products
+
+@app.post("/products", response_model=Product)
+async def create_product(request: ProductCreate):
+    new_id = max((product.id for product in products), default=0) + 1
+    product = Product(id=new_id, **request.dict())
+    products.append(product)
+    return product
+
+@app.put("/products/{product_id}", response_model=Product)
+async def update_product(product_id: int, request: ProductUpdate):
+    for index, product in enumerate(products):
+        if product.id == product_id:
+            updated = product.copy(update=request.dict(exclude_unset=True))
+            products[index] = updated
+            return updated
+    raise HTTPException(status_code=404, detail="Product not found")
+
+@app.delete("/products/{product_id}")
+async def delete_product(product_id: int):
+    for product in products:
+        if product.id == product_id:
+            products.remove(product)
+            return {"status": "deleted"}
+    raise HTTPException(status_code=404, detail="Product not found")
 
 @app.post("/process-payment")
 async def process_payment(request: PaymentRequest):

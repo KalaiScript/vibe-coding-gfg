@@ -876,6 +876,53 @@ nav ul li a:hover {
     padding: 0 5%;
 }
 
+.admin-panel {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 5%;
+}
+
+.admin-product-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.5rem;
+    border-radius: 24px;
+    align-items: center;
+}
+
+.admin-card-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.admin-card-info img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-product-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.admin-product-actions .btn {
+    min-width: 120px;
+}
+
+.delete-btn {
+    background: #C5A059;
+    color: #0A0A0A;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -917,6 +964,18 @@ input:focus, textarea:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.notification.success {
+    background: rgba(76, 175, 80, 0.95);
+}
+
+.notification.error {
+    background: rgba(244, 67, 54, 0.95);
+}
+
+.notification.info {
+    background: rgba(0, 111, 255, 0.95);
 }
 
 @keyframes slideInRight {

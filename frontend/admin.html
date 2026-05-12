@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | AURELIA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <a href="index.html" class="logo">AURELIA</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" id="cart-toggle">
+            <span>CART</span>
+            <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <main class="contact-container">
+        <h1 class="section-title fade-in">Admin Shop Management</h1>
+        <p class="text-center fade-in">Add, edit, or remove pieces from the AURELIA collection.</p>
+
+        <form id="admin-form" class="fade-in">
+            <input type="hidden" id="admin-product-id">
+            <input type="text" id="admin-product-name" placeholder="Product name" required>
+            <input type="text" id="admin-product-image" placeholder="Image URL" required>
+            <input type="number" step="0.01" id="admin-product-price" placeholder="Price" required>
+            <input type="text" id="admin-product-category" placeholder="Category (optional)">
+            <button type="submit" class="btn">Save Product</button>
+        </form>
+
+        <div id="admin-feedback" class="text-center" style="margin-top: 1rem;"></div>
+
+        <section class="admin-panel fade-in">
+            <h2>Current Collection</h2>
+            <div id="admin-products-list"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

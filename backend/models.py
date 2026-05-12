@@ -18,6 +18,18 @@ class PaymentRequest(BaseModel):
 class ChatRequest(BaseModel):
     message: str
 
+class ProductCreate(BaseModel):
+    name: str
+    price: float
+    imageUrl: str
+    category: Optional[str] = None
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    imageUrl: Optional[str] = None
+    category: Optional[str] = None
+
 class ContactRequest(BaseModel):
     name: str
     email: str
