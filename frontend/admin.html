@@ -6,13 +6,73 @@
     <title>Admin Dashboard | AURELIA</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        .admin-container {
+            display: flex;
+            min-height: calc(100vh - 100px);
+            gap: 0;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 2rem 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .admin-sidebar-title {
+            color: #ffd700;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .admin-nav-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .admin-nav-tab {
+            background: none;
+            border: none;
+            color: #999;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .admin-nav-tab:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .admin-nav-tab.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.15);
+            border-left-color: #ffd700;
+        }
+
+        .admin-content-wrapper {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
         .admin-dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 1200px;
         }
 
         .admin-section {
@@ -31,6 +91,26 @@
             margin-bottom: 1.5rem;
         }
 
+        .section-page {
+            display: none;
+        }
+
+        .section-page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -40,6 +120,7 @@
             background: rgba(255, 215, 0, 0.08);
             border-radius: 10px;
             border: 1px solid rgba(255, 215, 0, 0.2);
+            grid-column: span 2;
         }
 
         .admin-info {
@@ -295,6 +376,52 @@
             display: block;
         }
 
+        .full-width-section {
+            grid-column: span 2 !important;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+                padding: 1rem 0;
+            }
+
+            .admin-nav-tabs {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 0.5rem;
+                padding: 0 1rem;
+            }
+
+            .admin-nav-tab {
+                padding: 0.75rem 1rem;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+
+            .admin-nav-tab.active {
+                border-left: none;
+                border-bottom-color: #ffd700;
+            }
+
+            .admin-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width-section {
+                grid-column: span 1 !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .admin-dashboard {
                 grid-template-columns: 1fr;
@@ -323,116 +450,145 @@
         </div>
     </header>
 
-    <main class="contact-container" style="margin-top: 2rem;">
-        <div class="admin-header" id="admin-header"></div>
+    <main class="admin-container">
+        <!-- Sidebar Navigation -->
+        <div class="admin-sidebar">
+            <div class="admin-sidebar-title">ADMIN MENU</div>
+            <div class="admin-nav-tabs">
+                <button class="admin-nav-tab active" data-section="dashboard">📊 Dashboard</button>
+                <button class="admin-nav-tab" data-section="products">📦 Products</button>
+                <button class="admin-nav-tab" data-section="payments">💰 Payments</button>
+                <button class="admin-nav-tab" data-section="orders">📋 Orders</button>
+            </div>
+        </div>
 
-        <div class="admin-dashboard">
-            <!-- Statistics Section -->
-            <div class="admin-section">
-                <h2>Dashboard Overview</h2>
-                <div class="stats-grid" id="stats-grid">
-                    <div class="stat-card">
-                        <div class="value" id="total-products">0</div>
-                        <div class="label">Total Products</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value" id="total-revenue">$0</div>
-                        <div class="label">Total Revenue</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value" id="total-orders">0</div>
-                        <div class="label">Total Orders</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value" id="avg-order">$0</div>
-                        <div class="label">Avg Order Value</div>
+        <!-- Content Area -->
+        <div class="admin-content-wrapper">
+            <div class="admin-header" id="admin-header"></div>
+
+            <!-- DASHBOARD SECTION -->
+            <div id="dashboard" class="section-page active">
+                <div class="admin-dashboard">
+                    <div class="admin-section full-width-section">
+                        <h2>Dashboard Overview</h2>
+                        <div class="stats-grid" id="stats-grid">
+                            <div class="stat-card">
+                                <div class="value" id="total-products">0</div>
+                                <div class="label">Total Products</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="value" id="total-revenue">$0</div>
+                                <div class="label">Total Revenue</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="value" id="total-orders">0</div>
+                                <div class="label">Total Orders</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="value" id="avg-order">$0</div>
+                                <div class="label">Avg Order Value</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Product Management Section -->
-            <div class="admin-section">
-                <h2>Product Management</h2>
-                <form id="admin-form" class="product-form fade-in">
-                    <input type="hidden" id="admin-product-id">
-                    <input type="text" id="admin-product-name" placeholder="Product Name" required>
-                    <input type="text" id="admin-product-image" placeholder="Image URL" required>
-                    <input type="number" step="0.01" id="admin-product-price" placeholder="Price" required>
-                    <input type="text" id="admin-product-category" placeholder="Category (optional)">
-                    <button type="submit">Save Product</button>
-                </form>
-                <div id="admin-feedback" style="text-align: center; margin-top: 1rem; color: #4caf50;"></div>
-            </div>
+            <!-- PRODUCTS SECTION -->
+            <div id="products" class="section-page">
+                <div class="admin-dashboard">
+                    <!-- Product Management Section -->
+                    <div class="admin-section full-width-section">
+                        <h2>Product Management</h2>
+                        <form id="admin-form" class="product-form fade-in">
+                            <input type="hidden" id="admin-product-id">
+                            <input type="text" id="admin-product-name" placeholder="Product Name" required>
+                            <input type="text" id="admin-product-image" placeholder="Image URL" required>
+                            <input type="number" step="0.01" id="admin-product-price" placeholder="Price" required>
+                            <input type="text" id="admin-product-category" placeholder="Category (optional)">
+                            <button type="submit">Save Product</button>
+                        </form>
+                        <div id="admin-feedback" style="text-align: center; margin-top: 1rem; color: #4caf50;"></div>
+                    </div>
 
-            <!-- Products List Section -->
-            <div class="admin-section" style="grid-column: span 2;">
-                <h2>Current Collection</h2>
-                <div class="product-list" id="admin-products-list"></div>
-            </div>
-
-            <!-- Payment History Section -->
-            <div class="admin-section" style="grid-column: span 2;">
-                <h2>Payment History</h2>
-                
-                <div class="admin-tabs">
-                    <button class="tab-btn active" data-tab="all-payments">All Payments</button>
-                    <button class="tab-btn" data-tab="successful">Successful</button>
-                    <button class="tab-btn" data-tab="pending">Pending</button>
-                    <button class="tab-btn" data-tab="detailed-report">Detailed Report</button>
-                </div>
-
-                <div id="all-payments" class="tab-content active">
-                    <table class="payment-history-table">
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date & Time</th>
-                                <th>Items</th>
-                            </tr>
-                        </thead>
-                        <tbody id="payment-list"></tbody>
-                    </table>
-                    <div id="empty-payment" class="empty-state" style="display: none;">No payments recorded yet</div>
-                </div>
-
-                <div id="successful" class="tab-content">
-                    <table class="payment-history-table">
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Amount</th>
-                                <th>Date & Time</th>
-                                <th>Items</th>
-                            </tr>
-                        </thead>
-                        <tbody id="successful-payment-list"></tbody>
-                    </table>
-                </div>
-
-                <div id="pending" class="tab-content">
-                    <table class="payment-history-table">
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Amount</th>
-                                <th>Date & Time</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pending-payment-list"></tbody>
-                    </table>
-                </div>
-
-                <div id="detailed-report" class="tab-content">
-                    <div id="report-content" style="color: #ccc;"></div>
+                    <!-- Products List Section -->
+                    <div class="admin-section full-width-section">
+                        <h2>Current Collection</h2>
+                        <div class="product-list" id="admin-products-list"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Recent Orders Section -->
-            <div class="admin-section" style="grid-column: span 2;">
-                <h2>Recent Orders</h2>
-                <div id="recent-orders" class="product-list"></div>
+            <!-- PAYMENTS SECTION -->
+            <div id="payments" class="section-page">
+                <div class="admin-dashboard">
+                    <div class="admin-section full-width-section">
+                        <h2>Payment History</h2>
+                        
+                        <div class="admin-tabs">
+                            <button class="tab-btn active" data-tab="all-payments">All Payments</button>
+                            <button class="tab-btn" data-tab="successful">Successful</button>
+                            <button class="tab-btn" data-tab="pending">Pending</button>
+                            <button class="tab-btn" data-tab="detailed-report">Detailed Report</button>
+                        </div>
+
+                        <div id="all-payments" class="tab-content active">
+                            <table class="payment-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date & Time</th>
+                                        <th>Items</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payment-list"></tbody>
+                            </table>
+                            <div id="empty-payment" class="empty-state" style="display: none;">No payments recorded yet</div>
+                        </div>
+
+                        <div id="successful" class="tab-content">
+                            <table class="payment-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Amount</th>
+                                        <th>Date & Time</th>
+                                        <th>Items</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="successful-payment-list"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="pending" class="tab-content">
+                            <table class="payment-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Amount</th>
+                                        <th>Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-payment-list"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="detailed-report" class="tab-content">
+                            <div id="report-content" style="color: #ccc;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDERS SECTION -->
+            <div id="orders" class="section-page">
+                <div class="admin-dashboard">
+                    <div class="admin-section full-width-section">
+                        <h2>Recent Orders</h2>
+                        <div id="recent-orders" class="product-list"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -468,6 +624,40 @@
             localStorage.removeItem('admin_token');
             localStorage.removeItem('admin_name');
             window.location.href = 'admin-login.html';
+        }
+
+        function switchAdminSection(sectionId, tabElement) {
+            // Hide all sections
+            document.querySelectorAll('.section-page').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all nav tabs
+            document.querySelectorAll('.admin-nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+
+            // Add active to clicked tab
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+
+            // Update content based on section
+            if (sectionId === 'dashboard') {
+                updateDashboardStats();
+            } else if (sectionId === 'products') {
+                loadAdminProducts();
+            } else if (sectionId === 'payments') {
+                renderPaymentHistory();
+            } else if (sectionId === 'orders') {
+                renderRecentOrders();
+            }
         }
 
         function updateDashboardStats() {
@@ -554,6 +744,82 @@
             document.getElementById('report-content').innerHTML = report;
         }
 
+        function loadAdminProducts() {
+            const products = JSON.parse(localStorage.getItem('aurelia_products') || '[]');
+            const productList = document.getElementById('admin-products-list');
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<div class="empty-state">No products added yet</div>';
+                return;
+            }
+
+            productList.innerHTML = products.map(product => `
+                <div class="product-item">
+                    <div class="product-info">
+                        <h4>${product.name}</h4>
+                        <p>Price: $${product.price.toFixed(2)}</p>
+                        <p>Category: ${product.category || 'Uncategorized'}</p>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-small" onclick="editProduct(${product.id})">Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteProduct(${product.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecentOrders() {
+            const payments = JSON.parse(localStorage.getItem('aurelia_payments') || '[]');
+            const recentOrders = document.getElementById('recent-orders');
+            
+            const recentPayments = payments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+            
+            if (recentPayments.length === 0) {
+                recentOrders.innerHTML = '<div class="empty-state">No orders yet</div>';
+                return;
+            }
+
+            recentOrders.innerHTML = recentPayments.map(payment => `
+                <div class="product-item">
+                    <div class="product-info">
+                        <h4>Order #${payment.transactionId}</h4>
+                        <p>Amount: $${payment.amount.toFixed(2)}</p>
+                        <p>Date: ${new Date(payment.timestamp).toLocaleString()}</p>
+                        <p>Items: ${payment.itemCount}</p>
+                    </div>
+                    <div>
+                        <span class="status-badge status-${payment.status}">${payment.status.toUpperCase()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editProduct(productId) {
+            const products = JSON.parse(localStorage.getItem('aurelia_products') || '[]');
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                document.getElementById('admin-product-id').value = product.id;
+                document.getElementById('admin-product-name').value = product.name;
+                document.getElementById('admin-product-image').value = product.imageUrl;
+                document.getElementById('admin-product-price').value = product.price;
+                document.getElementById('admin-product-category').value = product.category || '';
+                
+                // Scroll to form
+                document.getElementById('admin-product-name').focus();
+            }
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                let products = JSON.parse(localStorage.getItem('aurelia_products') || '[]');
+                products = products.filter(p => p.id !== productId);
+                localStorage.setItem('aurelia_products', JSON.stringify(products));
+                loadAdminProducts();
+                updateDashboardStats();
+            }
+        }
+
         // Tab functionality
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -566,14 +832,30 @@
             });
         });
 
+        // Sidebar navigation functionality
+        document.querySelectorAll('.admin-nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                switchAdminSection(sectionId, this);
+            });
+        });
+
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('load', () => {
             if (checkAdminAuth()) {
                 renderAdminHeader();
                 updateDashboardStats();
                 renderPaymentHistory();
+                loadAdminProducts();
+                renderRecentOrders();
             }
         });
+
+        // Ensure functions are global
+        window.switchAdminSection = switchAdminSection;
+        window.logoutAdmin = logoutAdmin;
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
     </script>
 </body>
 </html>
