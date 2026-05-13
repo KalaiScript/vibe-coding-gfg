@@ -91,6 +91,10 @@ async function fetchProducts() {
         const response = await fetch(`${API_URL}/products`);
         products = await response.json();
         filteredProducts = [...products];
+        
+        // Store products in localStorage for admin access
+        localStorage.setItem('aurelia_products', JSON.stringify(products));
+        
         if (productsContainer) renderProducts();
         if (adminProductsList) renderAdminProducts();
     } catch (error) {
@@ -137,23 +141,20 @@ function renderAdminProducts() {
     if (!adminProductsList) return;
 
     if (products.length === 0) {
-        adminProductsList.innerHTML = '<p>No items are available in the collection yet.</p>';
+        adminProductsList.innerHTML = '<p class="empty-state">No items are available in the collection yet.</p>';
         return;
     }
 
     adminProductsList.innerHTML = products.map(product => `
-        <div class="admin-product-card">
-            <div class="admin-card-info">
-                <img src="${product.imageUrl}" alt="${product.name}">
-                <div>
-                    <h4>${product.name}</h4>
-                    <p>${product.category || 'Uncategorized'}</p>
-                    <span>$${product.price.toLocaleString()}</span>
-                </div>
+        <div class="product-item">
+            <div class="product-info">
+                <h4>${product.name}</h4>
+                <p>Price: <strong>$${product.price.toLocaleString()}</strong></p>
+                <p style="font-size: 0.85rem; color: #999;">${product.category || 'Uncategorized'}</p>
             </div>
-            <div class="admin-product-actions">
-                <button class="btn" onclick="populateAdminForm(${product.id})">Edit</button>
-                <button class="btn delete-btn" onclick="deleteAdminProduct(${product.id})">Delete</button>
+            <div class="product-actions">
+                <button class="btn-small" onclick="populateAdminForm(${product.id})">Edit</button>
+                <button class="btn-small btn-delete" onclick="deleteAdminProduct(${product.id})">Delete</button>
             </div>
         </div>
     `).join('');
@@ -171,7 +172,11 @@ function populateAdminForm(productId) {
     document.getElementById('admin-product-category').value = product.category || '';
     if (adminFeedback) {
         adminFeedback.innerText = `Editing ${product.name}. Submit to save changes.`;
+        adminFeedback.style.color = '#ffc107';
     }
+    
+    // Scroll to form
+    document.getElementById('admin-form').scrollIntoView({ behavior: 'smooth' });
 }
 
 async function handleAdminFormSubmit(e) {
@@ -523,6 +528,24 @@ function initEventListeners() {
         });
     }
 
+    // Payment Recording Function
+    window.recordPayment = function(amount, itemCount) {
+        const payment = {
+            transactionId: `AUR-${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
+            amount: amount,
+            itemCount: itemCount,
+            status: 'success',
+            timestamp: Date.now(),
+            date: new Date().toLocaleString()
+        };
+        
+        const payments = JSON.parse(localStorage.getItem('aurelia_payments') || '[]');
+        payments.push(payment);
+        localStorage.setItem('aurelia_payments', JSON.stringify(payments));
+        
+        return payment;
+    };
+
     // Payment Logic
     const paymentBtn = document.getElementById('process-payment-btn');
     if (paymentBtn) {
@@ -546,6 +569,9 @@ function initEventListeners() {
                     })
                 });
                 const data = await response.json();
+                
+                // Record payment in localStorage
+                recordPayment(total, cart.length);
                 
                 statusDiv.innerText = 'Success. Your AURELIA pieces are being prepared.';
                 paymentBtn.innerHTML = '✓ Payment Successful';

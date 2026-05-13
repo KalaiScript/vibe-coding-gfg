@@ -5,6 +5,8 @@ import time
 from backend.models import Product, ProductCreate, ProductUpdate, PaymentRequest, ChatRequest, ContactRequest
 from typing import List
 import os
+from pydantic import BaseModel
+import uuid
 
 app = FastAPI(title="AURELIA API")
 
@@ -17,6 +19,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Admin Credentials
+ADMIN_CREDENTIALS = {
+    "admin": "admin123",
+    "manager": "manager456"
+}
+
+# Payment history storage
+payment_history = []
+
+# Pydantic models for new endpoints
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
+
+class PaymentRecordRequest(BaseModel):
+    amount: float
+    items_count: int
+    customer_email: str = "customer@aurelia.com"
+    status: str = "success"
+
 # Mock Products
 products = [
     Product(id=1, name="Silk Evening Gown", price=1200.0, imageUrl="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400&auto=format&fit=crop"),
@@ -27,6 +49,54 @@ products = [
     Product(id=6, name="Pearl Drop Earrings", price=650.0, imageUrl="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=400&auto=format&fit=crop"),
     Product(id=7, name="Silk Scarf Collection", price=320.0, imageUrl="https://images.unsplash.com/photo-1601762603332-db5e4b90cc5d?q=80&w=400&auto=format&fit=crop"),
     Product(id=8, name="Designer Sunglasses", price=750.0, imageUrl="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=400&auto=format&fit=crop"),]
+
+# Admin Authentication Endpoint
+@app.post("/admin-login")
+async def admin_login(request: AdminLoginRequest):
+    if request.username in ADMIN_CREDENTIALS and ADMIN_CREDENTIALS[request.username] == request.password:
+        token = str(uuid.uuid4())
+        admin_name = request.username.capitalize()
+        return {
+            "token": token,
+            "admin_name": admin_name,
+            "message": f"Welcome {admin_name}!"
+        }
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+# Payment Recording Endpoint
+@app.post("/record-payment")
+async def record_payment(request: PaymentRecordRequest):
+    transaction_id = f"AUR-{uuid.uuid4().hex[:8].upper()}"
+    payment_record = {
+        "transactionId": transaction_id,
+        "amount": request.amount,
+        "itemCount": request.items_count,
+        "customerEmail": request.customer_email,
+        "status": request.status,
+        "timestamp": time.time(),
+        "date": str(time.ctime())
+    }
+    payment_history.append(payment_record)
+    return payment_record
+
+# Get Payment History
+@app.get("/payment-history")
+async def get_payment_history():
+    return payment_history
+
+# Get Payment Statistics
+@app.get("/payment-stats")
+async def get_payment_stats():
+    successful = [p for p in payment_history if p["status"] == "success"]
+    total_revenue = sum(p["amount"] for p in successful)
+    return {
+        "total_transactions": len(payment_history),
+        "successful_transactions": len(successful),
+        "total_revenue": total_revenue,
+        "average_order": total_revenue / len(successful) if successful else 0,
+        "success_rate": (len(successful) / len(payment_history) * 100) if payment_history else 0
+    }
+
 
 @app.get("/products", response_model=List[Product])
 async def get_products():

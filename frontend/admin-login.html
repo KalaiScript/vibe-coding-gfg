@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | AURELIA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .login-card p {
+            text-align: center;
+            color: #999;
+            margin-bottom: 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-form input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            color: #fff;
+            padding: 0.75rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .login-form input::placeholder {
+            color: #666;
+        }
+
+        .login-form button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-form button:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .login-form button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            display: none;
+            padding: 0.75rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .back-to-shop {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-to-shop a {
+            color: #ffd700;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-shop a:hover {
+            color: #ffed4e;
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials strong {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body style="background: #1a1a1a; margin: 0; padding: 0;">
+    <div class="login-container">
+        <div class="login-card">
+            <h1>AURELIA</h1>
+            <p>Admin Portal</p>
+            
+            <div class="error-message" id="error-msg"></div>
+            
+            <form class="login-form" id="login-form">
+                <input 
+                    type="text" 
+                    id="admin-username" 
+                    placeholder="Username" 
+                    required
+                    autocomplete="username"
+                >
+                <input 
+                    type="password" 
+                    id="admin-password" 
+                    placeholder="Password" 
+                    required
+                    autocomplete="current-password"
+                >
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="back-to-shop">
+                <a href="index.html">← Back to Store</a>
+            </div>
+
+            <div class="demo-credentials">
+                <strong>Demo Credentials:</strong><br>
+                Username: <strong>admin</strong><br>
+                Password: <strong>admin123</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            try {
+                const response = await fetch(`${API_URL}/admin-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_name', data.admin_name);
+                    localStorage.setItem('admin_logged_in', 'true');
+                    window.location.href = 'admin.html';
+                } else {
+                    errorMsg.textContent = data.message || 'Invalid credentials';
+                    errorMsg.classList.add('show');
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Connection error. Using demo mode.';
+                errorMsg.classList.add('show');
+                
+                // Demo mode for local testing
+                if (username === 'admin' && password === 'admin123') {
+                    localStorage.setItem('admin_token', 'demo_token_' + Date.now());
+                    localStorage.setItem('admin_name', 'Admin');
+                    localStorage.setItem('admin_logged_in', 'true');
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

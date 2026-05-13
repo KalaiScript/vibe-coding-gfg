@@ -3,8 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | AURELIA</title>
+    <title>Admin Dashboard | AURELIA</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-section {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-section h2 {
+            color: #ffd700;
+            font-family: 'Playfair Display', serif;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 215, 0, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .admin-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .admin-info p {
+            margin: 0;
+            color: #ccc;
+        }
+
+        .admin-info .admin-name {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .product-form input,
+        .product-form select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            color: #fff;
+            padding: 0.75rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .product-form input:focus,
+        .product-form select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .product-form button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .product-form button:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #ffd700;
+        }
+
+        .product-info p {
+            margin: 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: #ffed4e;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+
+        .payment-history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payment-history-table thead {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .payment-history-table th {
+            color: #ffd700;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .payment-history-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            color: #ccc;
+        }
+
+        .payment-history-table tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .status-failed {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .admin-tabs button {
+            background: none;
+            border: none;
+            color: #999;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .admin-tabs button.active {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+        }
+
+        .admin-tabs button:hover {
+            color: #ffd700;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .admin-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
     <header id="header" class="scrolled">
@@ -23,27 +323,257 @@
         </div>
     </header>
 
-    <main class="contact-container">
-        <h1 class="section-title fade-in">Admin Shop Management</h1>
-        <p class="text-center fade-in">Add, edit, or remove pieces from the AURELIA collection.</p>
+    <main class="contact-container" style="margin-top: 2rem;">
+        <div class="admin-header" id="admin-header"></div>
 
-        <form id="admin-form" class="fade-in">
-            <input type="hidden" id="admin-product-id">
-            <input type="text" id="admin-product-name" placeholder="Product name" required>
-            <input type="text" id="admin-product-image" placeholder="Image URL" required>
-            <input type="number" step="0.01" id="admin-product-price" placeholder="Price" required>
-            <input type="text" id="admin-product-category" placeholder="Category (optional)">
-            <button type="submit" class="btn">Save Product</button>
-        </form>
+        <div class="admin-dashboard">
+            <!-- Statistics Section -->
+            <div class="admin-section">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="value" id="total-products">0</div>
+                        <div class="label">Total Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="total-revenue">$0</div>
+                        <div class="label">Total Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="total-orders">0</div>
+                        <div class="label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="avg-order">$0</div>
+                        <div class="label">Avg Order Value</div>
+                    </div>
+                </div>
+            </div>
 
-        <div id="admin-feedback" class="text-center" style="margin-top: 1rem;"></div>
+            <!-- Product Management Section -->
+            <div class="admin-section">
+                <h2>Product Management</h2>
+                <form id="admin-form" class="product-form fade-in">
+                    <input type="hidden" id="admin-product-id">
+                    <input type="text" id="admin-product-name" placeholder="Product Name" required>
+                    <input type="text" id="admin-product-image" placeholder="Image URL" required>
+                    <input type="number" step="0.01" id="admin-product-price" placeholder="Price" required>
+                    <input type="text" id="admin-product-category" placeholder="Category (optional)">
+                    <button type="submit">Save Product</button>
+                </form>
+                <div id="admin-feedback" style="text-align: center; margin-top: 1rem; color: #4caf50;"></div>
+            </div>
 
-        <section class="admin-panel fade-in">
-            <h2>Current Collection</h2>
-            <div id="admin-products-list"></div>
-        </section>
+            <!-- Products List Section -->
+            <div class="admin-section" style="grid-column: span 2;">
+                <h2>Current Collection</h2>
+                <div class="product-list" id="admin-products-list"></div>
+            </div>
+
+            <!-- Payment History Section -->
+            <div class="admin-section" style="grid-column: span 2;">
+                <h2>Payment History</h2>
+                
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="all-payments">All Payments</button>
+                    <button class="tab-btn" data-tab="successful">Successful</button>
+                    <button class="tab-btn" data-tab="pending">Pending</button>
+                    <button class="tab-btn" data-tab="detailed-report">Detailed Report</button>
+                </div>
+
+                <div id="all-payments" class="tab-content active">
+                    <table class="payment-history-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date & Time</th>
+                                <th>Items</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-list"></tbody>
+                    </table>
+                    <div id="empty-payment" class="empty-state" style="display: none;">No payments recorded yet</div>
+                </div>
+
+                <div id="successful" class="tab-content">
+                    <table class="payment-history-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Date & Time</th>
+                                <th>Items</th>
+                            </tr>
+                        </thead>
+                        <tbody id="successful-payment-list"></tbody>
+                    </table>
+                </div>
+
+                <div id="pending" class="tab-content">
+                    <table class="payment-history-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-payment-list"></tbody>
+                    </table>
+                </div>
+
+                <div id="detailed-report" class="tab-content">
+                    <div id="report-content" style="color: #ccc;"></div>
+                </div>
+            </div>
+
+            <!-- Recent Orders Section -->
+            <div class="admin-section" style="grid-column: span 2;">
+                <h2>Recent Orders</h2>
+                <div id="recent-orders" class="product-list"></div>
+            </div>
+        </div>
     </main>
 
     <script src="script.js"></script>
+    <script>
+        // Admin Dashboard Specific Functions
+        const API_URL = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '';
+
+        function checkAdminAuth() {
+            const isLoggedIn = localStorage.getItem('admin_logged_in');
+            if (!isLoggedIn) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function renderAdminHeader() {
+            const adminName = localStorage.getItem('admin_name') || 'Admin';
+            const header = document.getElementById('admin-header');
+            header.innerHTML = `
+                <div class="admin-info">
+                    <p>Welcome, <span class="admin-name">${adminName}</span></p>
+                    <p>Dashboard</p>
+                </div>
+                <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+            `;
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('admin_logged_in');
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_name');
+            window.location.href = 'admin-login.html';
+        }
+
+        function updateDashboardStats() {
+            const payments = JSON.parse(localStorage.getItem('aurelia_payments') || '[]');
+            const products = JSON.parse(localStorage.getItem('aurelia_products') || '[]');
+
+            const totalRevenue = payments.reduce((sum, p) => p.status === 'success' ? sum + p.amount : sum, 0);
+            const totalOrders = payments.filter(p => p.status === 'success').length;
+            const avgOrder = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : 0;
+
+            document.getElementById('total-products').textContent = products.length;
+            document.getElementById('total-revenue').textContent = '$' + totalRevenue.toFixed(2);
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('avg-order').textContent = '$' + avgOrder;
+        }
+
+        function renderPaymentHistory() {
+            const payments = JSON.parse(localStorage.getItem('aurelia_payments') || '[]');
+            const paymentList = document.getElementById('payment-list');
+            const successfulList = document.getElementById('successful-payment-list');
+            const pendingList = document.getElementById('pending-payment-list');
+
+            if (payments.length === 0) {
+                document.getElementById('empty-payment').style.display = 'block';
+                paymentList.innerHTML = '';
+                return;
+            }
+
+            document.getElementById('empty-payment').style.display = 'none';
+
+            paymentList.innerHTML = payments.map(p => `
+                <tr>
+                    <td><strong>${p.transactionId}</strong></td>
+                    <td>$${p.amount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${p.status}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
+                    <td>${new Date(p.timestamp).toLocaleString()}</td>
+                    <td>${p.itemCount} item(s)</td>
+                </tr>
+            `).join('');
+
+            successfulList.innerHTML = payments
+                .filter(p => p.status === 'success')
+                .map(p => `
+                <tr>
+                    <td><strong>${p.transactionId}</strong></td>
+                    <td>$${p.amount.toFixed(2)}</td>
+                    <td>${new Date(p.timestamp).toLocaleString()}</td>
+                    <td>${p.itemCount} item(s)</td>
+                </tr>
+            `).join('');
+
+            pendingList.innerHTML = payments
+                .filter(p => p.status === 'pending')
+                .map(p => `
+                <tr>
+                    <td><strong>${p.transactionId}</strong></td>
+                    <td>$${p.amount.toFixed(2)}</td>
+                    <td>${new Date(p.timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            generateDetailedReport();
+        }
+
+        function generateDetailedReport() {
+            const payments = JSON.parse(localStorage.getItem('aurelia_payments') || '[]');
+            const successfulPayments = payments.filter(p => p.status === 'success');
+            
+            const totalRevenue = successfulPayments.reduce((sum, p) => sum + p.amount, 0);
+            const totalTransactions = payments.length;
+            const successRate = (successfulPayments.length / totalTransactions * 100).toFixed(2);
+
+            const report = `
+                <div style="background: rgba(255, 215, 0, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.2);">
+                    <h4 style="color: #ffd700; margin-top: 0;">Financial Summary</h4>
+                    <p><strong>Total Revenue:</strong> $${totalRevenue.toFixed(2)}</p>
+                    <p><strong>Total Transactions:</strong> ${totalTransactions}</p>
+                    <p><strong>Successful Transactions:</strong> ${successfulPayments.length}</p>
+                    <p><strong>Success Rate:</strong> ${successRate}%</p>
+                    <p><strong>Average Transaction Value:</strong> $${(totalRevenue / successfulPayments.length).toFixed(2)}</p>
+                    <p><strong>Last Updated:</strong> ${new Date().toLocaleString()}</p>
+                </div>
+            `;
+            document.getElementById('report-content').innerHTML = report;
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                e.target.classList.add('active');
+                const tabId = e.target.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAdminAuth()) {
+                renderAdminHeader();
+                updateDashboardStats();
+                renderPaymentHistory();
+            }
+        });
+    </script>
 </body>
 </html>
